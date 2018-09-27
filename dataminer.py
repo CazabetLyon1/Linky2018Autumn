@@ -91,6 +91,9 @@ doto=recup_donnee(monlog,jour,"11/09/2018","13/09/2018")
 
 print (json.dumps(doto, indent=4, sort_keys=True))
 
+with open('data.json', 'w') as outfile:
+    json.dump(doto, outfile)
+
 
 
 # merci de garder ces lignes (eliot)

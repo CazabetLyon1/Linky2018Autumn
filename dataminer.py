@@ -21,6 +21,15 @@ URL_API_DATA = '/suivi-de-consommation'
 
 date_activ = ""
 
+class donneeLinky:
+    def __init__(self, annee, mois, jour, heure, val):
+        self.annee = annee
+        self.mois = mois
+        self.jour = jour
+        self.heure = heure
+        self.val = val
+
+
 
 #liste des choix(= resource_id) a envoyer dans la requete
 heure='urlCdcHeure'
@@ -61,6 +70,7 @@ def login(username, password):
         slice = res[0:9]
         temp = str(int(res[9])-1)
         date_activ = slice + temp
+        print (date_activ)
 
 
         return session
@@ -101,7 +111,22 @@ def recup_donnee(session, resource_id, debut=None, fin=None):
 
 ###################################################
 
+def importCsv(filepath):
 
+    vals = []
+    with open(filepath, newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
+        for row in spamreader:
+            derp=donneeLinky((''.join(row)[0:4]),
+                             (''.join(row)[5:7]),
+                             (''.join(row)[8:10]),
+                             (''.join(row)[11:19]),
+                             (''.join(row)[25:]))
+            vals.append(derp)
+
+    return vals
+
+###################################################
 
 
 ########### MAIN ###########
@@ -115,15 +140,15 @@ now += str(datetime.datetime.now().month)
 now += "/"
 now += str(datetime.datetime.now().year)
 
-print (now)
 
-monlog=login("catounono@aol.com","Elioteliot@69")
-doto=recup_donnee(monlog,jour,date_activ,now)
 
-print (json.dumps(doto, indent=4, sort_keys=True))
+dotos = importCsv('data.csv')
 
-with open('data.json', 'w') as outfile:
-    json.dump(doto, outfile)
+for doto in dotos:
+    if(doto.annee == "2018"):
+        print(doto.val)
+
+#A FAIRE TRANSFORM JSON
 
 
 

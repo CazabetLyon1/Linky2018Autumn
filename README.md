@@ -9,3 +9,5 @@ Projet :
             statistiques
             conseils
             message de sensibilisation
+
+            detecté les matériels utilisé => machine learning python

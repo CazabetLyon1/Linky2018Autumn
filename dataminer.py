@@ -106,6 +106,8 @@ def recup_donnee(session, resource_id, debut=None, fin=None):
         requete = session.post(URL_API_BASE + URL_API_DATA, allow_redirects=False, data=formData, params=queryStringParameters)
 
     res = requete.json()
+    print (res)
+
 
 
 
@@ -141,12 +143,10 @@ now += "/"
 now += str(datetime.datetime.now().year)
 
 
-
-dotos = importCsv('data.csv')
-
-for doto in dotos:
-    if(doto.annee == "2018"):
-        print(doto.val)
+ses = login("catounono@aol.com","Elioteliot@69")
+print (now)
+print (date_activ)
+derp = recup_donnee(ses,jour,"14/09/2018","11/10/2018")
 
 #A FAIRE TRANSFORM JSON
 

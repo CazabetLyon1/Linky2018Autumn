@@ -29,9 +29,71 @@ class donneeLinky:
         self.heure = heure
         self.val = val
 
+class horaire:
+    def __init__(self):
+        self.h = "00";
+        self.m = "00";
+
+    def incrementer(self):
+        if(self.m == "00"):
+            self.m = "30"
+        else:
+            self.m = "00"
+            self.h = str((int(self.h)+1)%24)
+            if(len(self.h) == 1):
+                self.h = "0"+self.h
+
+    def afficher(self):
+        print(self.h,"h",self.m)
+
+    def str(self):
+        return self.h + 'h' + self.m
+
+class date:
+    def __init__(self,string):
+        self.a = int(string[6:13])
+        self.m = int(string[3:5])
+        self.j = int(string[0:2])
+
+    def afficher(self):
+        tmp = str(self.j) + '/' + str(self.m) + '/' + str(self.a)
+        print(tmp)
+
+    def incrementer(self):
+        if(self.m == 1
+        or self.m == 3
+        or self.m == 5
+        or self.m == 7
+        or self.m == 8
+        or self.m == 10
+        or self.m == 12):
+            if(self.j == 31):
+                self.j = 1
+                if(self.m == 12):
+                    self.m = 1
+                    self.a += 1
+                else:
+                    self.m += 1;
+            else:
+                self.j += 1;
+
+
+        else:
+            if(self.j == 30):
+                self.j = 1
+                if(self.m == 12):
+                    self.m = 1
+                    self.a += 1
+                else:
+                    self.m += 1;
+            else:
+                self.j += 1;
+
+
 
 
 #liste des choix(= resource_id) a envoyer dans la requete
+#pour demander heure d'une journée : mettre jour et lendemain en parametre (commence a 00h00)
 heure='urlCdcHeure'
 jour='urlCdcJour'
 mois='urlCdcMois'
@@ -106,7 +168,8 @@ def recup_donnee(session, resource_id, debut=None, fin=None):
         requete = session.post(URL_API_BASE + URL_API_DATA, allow_redirects=False, data=formData, params=queryStringParameters)
 
     res = requete.json()
-    print (res)
+
+    return res
 
 
 
@@ -130,8 +193,28 @@ def importCsv(filepath):
 
 ###################################################
 
+def transfoDonee (datas, param, debut, fin):
+    res = []
+    d = donneeLinky(0,0,0,0,0)
+
+    if(param == heure):
+        h=horaire()
+        for it in datas['graphe']['data']:
+            d = donneeLinky(0,0,0,h.str(),it['valeur'])
+            res.append(d)
+            h.incrementer()
+
+
+
+
+    return res;
+###################################################
+
+
 
 ########### MAIN ###########
+
+
 
 #user=input("veuillez entrer votre mail : ")
 #pwd = getpass.getpass(prompt='veuillez entrer votre mdp : ')
@@ -142,11 +225,33 @@ now += str(datetime.datetime.now().month)
 now += "/"
 now += str(datetime.datetime.now().year)
 
+param = heure
+debut = "17/10/2018"
+fin = "18/10/2018"
+
+doto = date(debut)
+for it in range(0, 100):
+    doto.afficher()
+    doto.incrementer()
+
 
 ses = login("catounono@aol.com","Elioteliot@69")
-print (now)
-print (date_activ)
-derp = recup_donnee(ses,jour,"14/09/2018","11/10/2018")
+print ("aujourd'hui : ",now)
+print ("date activation : ",date_activ)
+derp = recup_donnee(ses,param,debut,fin)
+
+trans = transfoDonee(derp,param,debut,fin)
+for int in trans:
+    print(int.heure)
+
+
+
+
+
+
+
+
+
 
 #A FAIRE TRANSFORM JSON
 

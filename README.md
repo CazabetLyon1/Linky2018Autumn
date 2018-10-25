@@ -11,4 +11,6 @@ Projet :
             conseils
             message de sensibilisation
 
-            detecté les matériels utilisé => machine learning python
+            detecté les matériels utilisé => machine learning python (sklearn)NMF
+            envoyer mail RC
+            installer chart.js

@@ -10,6 +10,7 @@ import getpass
 import urllib
 import re
 import datetime
+import pprint
 
 
 URL_LOGIN = 'https://espace-client-connexion.enedis.fr'
@@ -131,8 +132,8 @@ def login(username, password):
         res = matches[0]
         slice = res[0:9]
         temp = str(int(res[9])-1)
-        date_activ = slice + temp
-        print (date_activ)
+        global date_activ
+        date_activ += slice + temp
 
 
         return session
@@ -179,15 +180,23 @@ def recup_donnee(session, resource_id, debut=None, fin=None):
 def importCsv(filepath):
 
     vals = []
+    cont = 0
     with open(filepath, newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
         for row in spamreader:
-            derp=donneeLinky((''.join(row)[0:4]),
-                             (''.join(row)[5:7]),
-                             (''.join(row)[8:10]),
-                             (''.join(row)[11:19]),
-                             (''.join(row)[25:]))
-            vals.append(derp)
+            if(cont > 44):
+                derp=donneeLinky((''.join(row)[0:4]),
+                                 (''.join(row)[5:7]),
+                                 (''.join(row)[8:10]),
+                                 (''.join(row)[11:13])+'h'+(''.join(row)[14:16]),
+                                 (''.join(row)[25:]))
+                if(derp.val == ""):
+                    derp.val = -1
+                else:
+                    derp.val = float(derp.val)/1000
+                vals.append(derp)
+            else:
+                cont+=1
 
     return vals
 
@@ -195,21 +204,36 @@ def importCsv(filepath):
 
 def transfoDonee (datas, param, debut, fin):
     res = []
-    d = donneeLinky(0,0,0,0,0)
+
 
     if(param == heure):
         h=horaire()
+        d=date(debut)
+        cont=0
+
         for it in datas['graphe']['data']:
-            d = donneeLinky(0,0,0,h.str(),it['valeur'])
-            res.append(d)
+            tmp = donneeLinky(d.a,d.m,d.j,h.str(),it['valeur'])
+            res.append(tmp)
             h.incrementer()
+            if(cont == 47):
+                d.incrementer()
+                cont=0
+            else:
+                cont+=1
 
 
 
 
     return res;
 ###################################################
-
+def donnneToCsv(datas, filepath):
+    with open(filepath,'w',newline='') as csvfile:
+        a = csv.writer(csvfile, delimiter=',')
+        tab=[['Annee','Mois','Jour','Heure','Valeur']]
+        for int in datas:
+            tab.append([int.annee,int.mois,int.jour,int.heure,int.val])
+        a.writerows(tab)
+###################################################
 
 
 ########### MAIN ###########
@@ -226,23 +250,23 @@ now += "/"
 now += str(datetime.datetime.now().year)
 
 param = heure
-debut = "17/10/2018"
+debut = "12/10/2018"
 fin = "18/10/2018"
-
-doto = date(debut)
-for it in range(0, 100):
-    doto.afficher()
-    doto.incrementer()
 
 
 ses = login("catounono@aol.com","Elioteliot@69")
 print ("aujourd'hui : ",now)
 print ("date activation : ",date_activ)
-derp = recup_donnee(ses,param,debut,fin)
 
+derp = recup_donnee(ses,param,debut,fin)
 trans = transfoDonee(derp,param,debut,fin)
-for int in trans:
-    print(int.heure)
+
+jesaispo = importCsv('data.csv')
+
+donnneToCsv(jesaispo,'test.csv')
+donnneToCsv(trans,'test1.csv')
+
+
 
 
 

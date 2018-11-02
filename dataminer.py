@@ -10,6 +10,7 @@ import getpass
 import urllib
 import re
 import datetime
+import pprint
 
 
 URL_LOGIN = 'https://espace-client-connexion.enedis.fr'
@@ -29,9 +30,71 @@ class donneeLinky:
         self.heure = heure
         self.val = val
 
+class horaire:
+    def __init__(self):
+        self.h = "00";
+        self.m = "00";
+
+    def incrementer(self):
+        if(self.m == "00"):
+            self.m = "30"
+        else:
+            self.m = "00"
+            self.h = str((int(self.h)+1)%24)
+            if(len(self.h) == 1):
+                self.h = "0"+self.h
+
+    def afficher(self):
+        print(self.h,"h",self.m)
+
+    def str(self):
+        return self.h + 'h' + self.m
+
+class date:
+    def __init__(self,string):
+        self.a = int(string[6:13])
+        self.m = int(string[3:5])
+        self.j = int(string[0:2])
+
+    def afficher(self):
+        tmp = str(self.j) + '/' + str(self.m) + '/' + str(self.a)
+        print(tmp)
+
+    def incrementer(self):
+        if(self.m == 1
+        or self.m == 3
+        or self.m == 5
+        or self.m == 7
+        or self.m == 8
+        or self.m == 10
+        or self.m == 12):
+            if(self.j == 31):
+                self.j = 1
+                if(self.m == 12):
+                    self.m = 1
+                    self.a += 1
+                else:
+                    self.m += 1;
+            else:
+                self.j += 1;
+
+
+        else:
+            if(self.j == 30):
+                self.j = 1
+                if(self.m == 12):
+                    self.m = 1
+                    self.a += 1
+                else:
+                    self.m += 1;
+            else:
+                self.j += 1;
+
+
 
 
 #liste des choix(= resource_id) a envoyer dans la requete
+#pour demander heure d'une journée : mettre jour et lendemain en parametre (commence a 00h00)
 heure='urlCdcHeure'
 jour='urlCdcJour'
 mois='urlCdcMois'
@@ -69,8 +132,8 @@ def login(username, password):
         res = matches[0]
         slice = res[0:9]
         temp = str(int(res[9])-1)
-        date_activ = slice + temp
-        print (date_activ)
+        global date_activ
+        date_activ += slice + temp
 
 
         return session
@@ -106,7 +169,8 @@ def recup_donnee(session, resource_id, debut=None, fin=None):
         requete = session.post(URL_API_BASE + URL_API_DATA, allow_redirects=False, data=formData, params=queryStringParameters)
 
     res = requete.json()
-    print (res)
+
+    return res
 
 
 
@@ -116,22 +180,65 @@ def recup_donnee(session, resource_id, debut=None, fin=None):
 def importCsv(filepath):
 
     vals = []
+    cont = 0
     with open(filepath, newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
         for row in spamreader:
-            derp=donneeLinky((''.join(row)[0:4]),
-                             (''.join(row)[5:7]),
-                             (''.join(row)[8:10]),
-                             (''.join(row)[11:19]),
-                             (''.join(row)[25:]))
-            vals.append(derp)
+            if(cont > 44):
+                derp=donneeLinky((''.join(row)[0:4]),
+                                 (''.join(row)[5:7]),
+                                 (''.join(row)[8:10]),
+                                 (''.join(row)[11:13])+'h'+(''.join(row)[14:16]),
+                                 (''.join(row)[25:]))
+                if(derp.val == ""):
+                    derp.val = -1
+                else:
+                    derp.val = float(derp.val)/1000
+                vals.append(derp)
+            else:
+                cont+=1
 
     return vals
 
 ###################################################
 
+def transfoDonee (datas, param, debut, fin):
+    res = []
+
+
+    if(param == heure):
+        h=horaire()
+        d=date(debut)
+        cont=0
+
+        for it in datas['graphe']['data']:
+            tmp = donneeLinky(d.a,d.m,d.j,h.str(),it['valeur'])
+            res.append(tmp)
+            h.incrementer()
+            if(cont == 47):
+                d.incrementer()
+                cont=0
+            else:
+                cont+=1
+
+
+
+
+    return res;
+###################################################
+def donnneToCsv(datas, filepath):
+    with open(filepath,'w',newline='') as csvfile:
+        a = csv.writer(csvfile, delimiter=',')
+        tab=[['Annee','Mois','Jour','Heure','Valeur']]
+        for int in datas:
+            tab.append([int.annee,int.mois,int.jour,int.heure,int.val])
+        a.writerows(tab)
+###################################################
+
 
 ########### MAIN ###########
+
+
 
 #user=input("veuillez entrer votre mail : ")
 #pwd = getpass.getpass(prompt='veuillez entrer votre mdp : ')
@@ -142,11 +249,33 @@ now += str(datetime.datetime.now().month)
 now += "/"
 now += str(datetime.datetime.now().year)
 
+param = heure
+debut = "12/10/2018"
+fin = "18/10/2018"
+
 
 ses = login("catounono@aol.com","Elioteliot@69")
-print (now)
-print (date_activ)
-derp = recup_donnee(ses,jour,"14/09/2018","11/10/2018")
+print ("aujourd'hui : ",now)
+print ("date activation : ",date_activ)
+
+derp = recup_donnee(ses,param,debut,fin)
+trans = transfoDonee(derp,param,debut,fin)
+
+jesaispo = importCsv('data.csv')
+
+donnneToCsv(jesaispo,'test.csv')
+donnneToCsv(trans,'test1.csv')
+
+
+
+
+
+
+
+
+
+
+
 
 #A FAIRE TRANSFORM JSON
 

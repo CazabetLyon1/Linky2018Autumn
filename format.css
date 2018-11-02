@@ -77,3 +77,16 @@
   -webkit-transition: 300ms ease;
   transition: 300ms ease;
 }
+
+#cont a:hover {
+  color: #004508;
+}
+
+#cont a{
+  font-size: 20px;
+  color: #002063
+}
+
+#cont {
+  padding-top: 20px;
+}

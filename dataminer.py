@@ -235,31 +235,34 @@ def donnneToCsv(datas, filepath):
         a.writerows(tab)
 ###################################################
 
+def get_heure_now():
+    now = ""
+    now += str(datetime.datetime.now().day)
+    now += "/"
+    now += str(datetime.datetime.now().month)
+    now += "/"
+    now += str(datetime.datetime.now().year)
+
+    return now
+###################################################
+
 
 ########### MAIN ###########
 
 
 
-#user=input("veuillez entrer votre mail : ")
-#pwd = getpass.getpass(prompt='veuillez entrer votre mdp : ')
-now = ""
-now += str(datetime.datetime.now().day)
-now += "/"
-now += str(datetime.datetime.now().month)
-now += "/"
-now += str(datetime.datetime.now().year)
 
 param = heure
-debut = "12/10/2018"
-fin = "18/10/2018"
+debut = "01/10/2018"
+fin = "08/10/2018"
 
 
 ses = login("catounono@aol.com","Elioteliot@69")
-print ("aujourd'hui : ",now)
+print ("aujourd'hui : ",get_heure_now())
 print ("date activation : ",date_activ)
 
-derp = recup_donnee(ses,param,debut,fin)
-trans = transfoDonee(derp,param,debut,fin)
+derp = recup_donnee(ses,param,date_activ,get_heure_now())
+trans = transfoDonee(derp,param,date_activ,get_heure_now())
 
 jesaispo = importCsv('data.csv')
 

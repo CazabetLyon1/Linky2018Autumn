@@ -1,20 +1,32 @@
-import dataminer
+from dataminer import *
 import numpy as np
-def lecture_donnees(filepath):
-    vals = []
-    with open(filepath, newline='') as csvfile:
-        spamreader  = csv.reader(csvfile, delimiter=';', quotechar='|')
-        for row in spamreader:
-            listeD = donneeLinky((''.join(row)[0:4]),
-                                 (''.join(row)[5:7]),
-                                 (''.join(row)[8:10]),
-                                 (''.join(row)[11:13])+'h'+(''.join(row)[14:16]),
-                                 (''.join(row)[25:]))
-            print (listeD)
-            if(listeD.val == ""):
-                listeD.val = 0
-            else:
-                listeD.val = float(derp.val)/1000
-            vals.append(listeD)
+from sklearn.decomposition import NMF
 
-    return donnee_matrice
+print(len(trans))
+ligne = []
+matrice = []
+compteur = 0
+for donnee in trans:
+    if(compteur == 7*48):
+        compteur = 0
+        matrice.append(ligne)
+        ligne = []
+    else:
+        if(donnee.val <0):
+            donnee.val = 0
+        ligne.append(donnee.val)
+        compteur += 1
+if (compteur <7*48 and compteur !=0):
+    while(compteur <7*48):
+        ligne.append(0)
+        compteur += 1
+    matrice.append(ligne)
+
+mat = np.array(matrice)
+print(mat)
+print(mat.size)
+
+model = NMF(n_components=2, init='random', random_state=0)
+W = model.fit_transform(mat)
+H = model.components_
+print(H)

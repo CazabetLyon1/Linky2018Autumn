@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="utf-8">
+        <title>test char js</title>
+        <script src="chart.js"></script>
+    </head>
+    <body>
+        <div style="width:800px;">
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <input type='file' accept='text/plain' onchange='openFile(event)'><br>
+        <div id='output'>
+        ...
+        </div>
+
+
+        <script type="text/javascript">
+
+          var openFile = function(event) {
+            var input = event.target;
+
+            var reader = new FileReader();
+            reader.onload = function(){
+              var text = reader.result;
+              var node = document.getElementById('output');
+              console.log(dotos);
+            };
+            reader.readAsText(input.files[0]);
+          };
+
+         var parseCsv = function(text) {
+             var labels = [];
+                 labels.push(text.substring(0,5));
+                 labels.push(text.substring(6,10));
+                 labels.push(text.substring(11,15));
+                 labels.push(text.substring(16,21));
+                 labels.push(text.substring(22,28));
+         }
+
+
+
+    </script>
+
+    </body>
+</html>

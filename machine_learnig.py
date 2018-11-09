@@ -26,7 +26,7 @@ mat = np.array(matrice)
 print(mat)
 print(mat.size)
 
-model = NMF(n_components=2, init='random', random_state=0)
+model = NMF(n_components=4, init='random', random_state=0)
 W = model.fit_transform(mat)
 H = model.components_
 print(H[1])

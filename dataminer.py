@@ -9,6 +9,7 @@ import json
 import getpass
 import urllib
 import re
+import string
 import datetime
 import pprint
 
@@ -221,10 +222,24 @@ def transfoDonee (datas, param, debut, fin):
             else:
                 cont+=1
 
-
-
-
     return res;
+###################################################
+
+def csvToJson(csvpath,jsonpath):
+    csvfile = open(csvpath, 'r')
+    jsonfile = open(jsonpath, 'w')
+
+    fieldnames = ("annee","mois","jour","heure","valeur")
+    reader = csv.DictReader( csvfile, fieldnames)
+
+    cond = 0
+    for row in reader:
+        if(cond == 1):
+            json.dump(row, jsonfile)
+            jsonfile.write('\n')
+        else:
+            cond = 1
+
 ###################################################
 def donnneToCsv(datas, filepath):
     with open(filepath,'w',newline='') as csvfile:
@@ -251,7 +266,6 @@ def get_heure_now():
 
 
 
-
 param = heure
 debut = "01/10/2018"
 fin = "08/10/2018"
@@ -262,7 +276,9 @@ print ("aujourd'hui : ",get_heure_now())
 print ("date activation : ",date_activ)
 
 derp = recup_donnee(ses,param,date_activ,get_heure_now())
-trans = transfoDonee(derp,param,date_activ,get_heure_now())
+trans = importCsv('data.csv')
+# transfoDonee(derp,param,date_activ,get_heure_now())
+
 
 jesaispo = importCsv('data.csv')
 

@@ -236,6 +236,7 @@ def csvToJson(csvpath,jsonpath):
     for row in reader:
         if(cond == 1):
             json.dump(row, jsonfile)
+            jsonfile.write(',')
             jsonfile.write('\n')
         else:
             cond = 1
@@ -263,7 +264,8 @@ def get_heure_now():
 
 
 ########### MAIN ###########
-
+csvToJson('test.csv','test.json')
+print('fini')
 
 
 param = heure

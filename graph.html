@@ -9,18 +9,24 @@
         <div style="width:800px;">
             <canvas id="myChart"></canvas>
         </div>
+        <input type="date" id="debut">
+        <input type="date" id="fin">
 
         <input type='file' accept='text/plain' onchange='openFile(event)'><br>
+        <input type='button' value='update' onclick='update()'>
         <div id='output'>
         ...
         </div>
 
 
         <script type="text/javascript">
+        var allDatas;
         var dotos = [];
         var tab = [1,2,3,4,5,6,7];
         var date = new Date(2018,11,16);
         console.log(date.getDay());
+
+
 
 
         var ctx = document.getElementById("myChart").getContext('2d');
@@ -63,6 +69,73 @@
             }
         });
 
+            var tabUpdate = function() {
+                var debut = (document.getElementById('debut').value).toString();
+                var fin = (document.getElementById('fin').value).toString();
+                var datas = periode(allDatas, debut, fin);
+                var tabMois = decoupeMois(datas);
+                console.log(tabMois);
+            }
+
+            var moisIncr = function(mois)
+            {
+                var m;
+                if(typeof(mois) === 'string')
+                {
+                    console.log(typeof(mois));
+                    m = parseInt(mois);
+                }
+                else {
+                    m = mois;
+                }
+
+
+                if(m < 12)
+                {
+                    return m + 1;
+                }
+                else {
+                    return 1;
+                }
+            }
+
+            var formatDate = function(date) {
+                var annee = date.slice(0,4);
+                var mois = date.slice(5,7);
+                var jour = date.slice(8,10);
+
+                var res = annee + '/' + mois + '/' + jour;
+                console.log(res);
+
+                return res;
+            }
+
+            var decoupeMois = function(datas) {
+                var tabMois = [];
+                var temp = []
+                var currentMois = (document.getElementById('debut').value).toString().slice(5,7);
+                console.log(currentMois);
+
+                for (var i = 0; i < datas.length; i++) {
+                    if(datas[i]['mois'] == currentMois)
+                    {
+                        console.log("if");
+
+                        temp.push(datas[i]);
+                    }
+                    else {
+                        console.log("else");
+                        tabMois.push(temp);
+                        temp = [];
+                        currentMois = moisIncr(currentMois);
+                        temp.push(datas[i]);
+
+                    }
+                }
+                tabMois.push(temp);
+                return tabMois;
+            }
+
             var openFile = function(event) {
                 var input = event.target;
 
@@ -72,16 +145,18 @@
                     var node = document.getElementById('output');
                     var js = JSON.parse(text);
                     putZero(js['data']);
+                    allDatas = js['data'];
+                    tabUpdate();
 
 
 
-                    dotos.push(stats(periode(js['data'],"2018/01/01","2018/01/31"))[0]);
-                    dotos.push(stats(periode(js['data'],"2018/02/01","2018/02/30"))[0]);
-                    dotos.push(stats(periode(js['data'],"2018/03/01","2018/03/31"))[0]);
-                    dotos.push(stats(periode(js['data'],"2018/04/01","2018/04/30"))[0]);
-                    dotos.push(stats(periode(js['data'],"2018/05/01","2018/05/31"))[0]);
-                    dotos.push(stats(periode(js['data'],"2018/06/01","2018/06/30"))[0]);
-                    dotos.push(stats(periode(js['data'],"2018/07/01","2018/07/31"))[0]);
+                    dotos.push(stats(periode(js['data'],"2018/01/01","2018/01/31"))[2]);
+                    dotos.push(stats(periode(js['data'],"2018/02/01","2018/02/30"))[2]);
+                    dotos.push(stats(periode(js['data'],"2018/03/01","2018/03/31"))[2]);
+                    dotos.push(stats(periode(js['data'],"2018/04/01","2018/04/30"))[2]);
+                    dotos.push(stats(periode(js['data'],"2018/05/01","2018/05/31"))[2]);
+                    dotos.push(stats(periode(js['data'],"2018/06/01","2018/06/30"))[2]);
+                    dotos.push(stats(periode(js['data'],"2018/07/01","2018/07/31"))[2]);
                     //console.log(dotos);
 
                     myChart['config']['data']['datasets']['0']['data'] = dotos;

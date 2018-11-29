@@ -73,9 +73,36 @@
                 var debut = (document.getElementById('debut').value).toString();
                 var fin = (document.getElementById('fin').value).toString();
                 var datas = periode(allDatas, debut, fin);
-                var tabMois = decoupeMois(datas);
-                console.log(tabMois);
+                var tabd = decoupeJour(datas);
+                console.log(tabd)
+
+                myChart['config']['data']['datasets']['0']['data'] = chartData(tabd,0);
+                myChart['config']['data']['labels'] = chartLabel(tabd);
+                myChart.update();
+
             }
+            var chartData = function(datas,filtre) {
+                var temp = [];
+                var res = [];
+
+                for (var i = 0; i < datas.length; i++) {
+                    temp = stats(datas[i])[filtre];
+                    res.push(temp);
+                }
+                return res;
+
+
+            }
+
+            var chartLabel = function(datas){
+                var res = [];
+                for (var i = 0; i < datas.length; i++) {
+                    res.push(i.toString());
+                }
+                console.log(res);
+                return res;
+            }
+
 
             var moisIncr = function(mois)
             {
@@ -114,7 +141,6 @@
                 var tabMois = [];
                 var temp = []
                 var currentMois = (document.getElementById('debut').value).toString().slice(5,7);
-                console.log(currentMois);
 
                 for (var i = 0; i < datas.length; i++) {
                     if(datas[i]['mois'] == currentMois)
@@ -136,6 +162,58 @@
                 return tabMois;
             }
 
+            var decoupeJour = function(datas) {
+                var tabJour = [];
+                var temp = [];
+                var currentJour = parseInt((document.getElementById('debut').value).toString().slice(8,10));
+
+                for (var i = 0; i < datas.length; i++) {
+                    if(datas[i]['jour'] == currentJour)
+                    {
+                        console.log("if");
+
+                        temp.push(datas[i]);
+                    }
+                    else {
+                        console.log(currentJour);
+                        tabJour.push(temp);
+                        temp = [];
+                        currentJour += 1;
+                        temp.push(datas[i]);
+
+                    }
+                }
+                tabJour.push(temp);
+                return tabJour;
+
+            }
+
+            var decoupeAnnee = function(datas) {
+                var tabAnnee = [];
+                var temp = [];
+                var currentAnnee = parseInt((document.getElementById('debut').value).toString().slice(0,4));
+
+                for (var i = 0; i < datas.length; i++) {
+                    if(datas[i]['annee'] == currentAnnee)
+                    {
+                        console.log("if");
+
+                        temp.push(datas[i]);
+                    }
+                    else {
+                        console.log(currentAnnee);
+                        tabAnnee.push(temp);
+                        temp = [];
+                        currentAnnee += 1;
+                        temp.push(datas[i]);
+
+                    }
+                }
+                tabAnnee.push(temp);
+                return tabAnnee;
+
+            }
+
             var openFile = function(event) {
                 var input = event.target;
 
@@ -149,18 +227,6 @@
                     tabUpdate();
 
 
-
-                    dotos.push(stats(periode(js['data'],"2018/01/01","2018/01/31"))[2]);
-                    dotos.push(stats(periode(js['data'],"2018/02/01","2018/02/30"))[2]);
-                    dotos.push(stats(periode(js['data'],"2018/03/01","2018/03/31"))[2]);
-                    dotos.push(stats(periode(js['data'],"2018/04/01","2018/04/30"))[2]);
-                    dotos.push(stats(periode(js['data'],"2018/05/01","2018/05/31"))[2]);
-                    dotos.push(stats(periode(js['data'],"2018/06/01","2018/06/30"))[2]);
-                    dotos.push(stats(periode(js['data'],"2018/07/01","2018/07/31"))[2]);
-                    //console.log(dotos);
-
-                    myChart['config']['data']['datasets']['0']['data'] = dotos;
-                    myChart.update();
                     };
                 reader.readAsText(input.files[0]);
 
@@ -174,8 +240,8 @@
                 var moy = 0;
                 var res = [];
 
-                for (var d in datas) {
-                    somme += parseInt(datas[compt]['valeur']);
+                for (var i=0; i<datas.length;i++) {
+                    somme += parseFloat(datas[i]['valeur']);
                     compt++;
                 }
                 moy = somme/compt;

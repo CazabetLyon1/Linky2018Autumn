@@ -1,4 +1,13 @@
-$( document ).ready(function() {
+$(document).ready(function() {
+
+var chart = null;
+
+  $("#core").load("./accueil.html");
+  $("#mod").load("./modal.html");
+
+
+
+
 
   // Open navbarSide when button is clicked
   $('#bars').on('click', function() {
@@ -14,5 +23,16 @@ $( document ).ready(function() {
    }
   });
 
+  $('#graphique').on('click', function() {
+    $("#core").html("");
+      if(chart === null)
+        grap("myChart");
+      $("#graph").css("display","block");
+  });
+
+  $('#home').on('click', function() {
+    $("#core").load("./accueil.html");
+    $("#graph").css("display","none");
+  });
 
 });

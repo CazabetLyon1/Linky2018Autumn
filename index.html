@@ -1,117 +1,54 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!doctype html>
+  <html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="./format.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./format.css">
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-  <!-- Icon CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Icon CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-  <script src="./projet.js"></script>
-  <title>Graphique Linky</title>
-</head>
-<body>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="./chart.js"></script>
+    <script src="./graphique.js"></script>
+    <script src="./projet.js"></script>
+    <title>Graphique Linky</title>
+  </head>
+  <body>
 
-  <nav class="navbar navbar-expand-sm  bg-dark navbar-dark">
-    <button class="btn btn-dark fa fa-bars" id="bars" style="color: white;font-size: 1.5em;"></button>
-    <a class="navbar-brand" style="z-index: 995;" href="#">Linky</a>
-  </nav>
+    <nav class="navbar navbar-expand-sm  bg-dark navbar-dark">
+      <button class="btn btn-dark fa fa-bars" id="bars" style="color: white;font-size: 1.5em;"></button>
+      <a class="navbar-brand" style="z-index: 995;" id="home" href="#">Linky</a>
+    </nav>
 
-  <div class="sidebar" id="menu">
-    <a href="#" data-toggle="modal" data-target="#ModalGraphique"><i class="fa fa-fw fa-download"></i>Importer</a>
-    <a href="#"><i class="fa fa-fw fa-bar-chart"></i>Graphique</a>
-    <a href="#" data-toggle="modal" data-target="#ModalReset"><i class="fa fa-fw fa-times"></i>Reset</a>
-  </div>  
+    <div class="sidebar" id="menu">
+      <a href="#" data-toggle="modal" data-target="#ModalGraphique"><i class="fa fa-fw fa-download"></i>Importer</a>
+      <a href="#" id="graphique"><i class="fa fa-fw fa-bar-chart"></i>Graphique</a>
+      <a href="#" data-toggle="modal" data-target="#ModalReset"><i class="fa fa-fw fa-times"></i>Reset</a>
+    </div>  
 
-  <div id="core">
-  <div class="mast">
-    <h1 class="text-center">Bienvenue sur Graphique Linky</h1>
-    <h4 class="text-center">Le site révolutionnaire du compteur Linky</h4>
+    <div id="core">
   </div>
-  <div class="container" id="cont">
-    <div class="row">
-    <div class="col-sm-4">
-      <h3>Ce site vous permet d'afficher votre consommation électrique de façon claire et fluide !</h3>
-    </div>
-    <div class="col-sm-2">
-    </div>
-    <div class="col-sm-4">
-      <a data-toggle="modal" data-target="#ModalGraphique" href="#">Cliquez ici pour importer vos données depuis le site Enedis !</a>
-    </div>
+
+    <div class="container">
+  <div id="graph">
+    <canvas id="myChart"></canvas>
   </div>
 </div>
 
-
-
-  <!-- Modal Graphique-->
-  <div class="modal fade" id="ModalGraphique">
-    <div class="modal-dialog">
-      <div class="modal-content">
-
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">Importer les données depuis Enedis</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        
-        <!-- Modal body -->
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="usr">Email:</label>
-            <input type="text" class="form-control" id="usr" name="username">
-          </div>
-          <div class="form-group">
-            <label for="pwd">Mot de passe:</label>
-            <input type="password" class="form-control" id="pwd" name="password">
-          </div>
-        </div>
-        
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Connection</button>
-        </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal Reset-->
-  <div class="modal fade" id="ModalReset">
-    <div class="modal-dialog">
-      <div class="modal-content">
-
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">Reset</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        
-        <!-- Modal body -->
-        <div class="modal-body">
-          <div class="text-center">
-           <h2> Attention !</h2> Vous êtes sur le point d'effacer toutes les données, vous allez devoir réimporter les données de nouveau pour obtenir un graphique. <br/>
-           Êtes-vous sur de vouloir reset les informations ?
-         </div>
-         <div class="modal-footer">
-          <button type="button" class="btn btn-success mr-auto" data-dismiss="modal">Non</button>
-          <button type="button" class="btn btn-danger float-right">Oui</button>
-        </div>
-      </div>
-    </div>
+  <div id="mod">
   </div>
 
 
 
-</body>
-</html>
+    </body>
+    </html>

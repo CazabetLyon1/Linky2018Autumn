@@ -66,7 +66,7 @@
             var debut = parseDateCal(document.getElementById('debut').value);
             var fin = parseDateCal(document.getElementById('fin').value);
             var datas = periode(allDatas, debut, fin);
-            var tabd = decoupeAnnee(datas);
+            var tabd = decoupeMois(datas);
             console.log(tabd);
 
             myChart['config']['data']['datasets']['0']['data'] = chartData(tabd,0);
@@ -119,6 +119,36 @@
             }
             tabAnnee.push(temp);
             return tabAnnee;
+
+        }
+
+        var decoupeMois = function(datas) {
+            var tabMois = [];
+            var temp = [];
+            var currentMois = parseDateCal(document.getElementById('debut').value).getMonth()+1;
+            var currentDate = parseDateCal(document.getElementById('debut').value);
+
+            for (var i = 0; i < datas.length; i++) {
+                if(datas[i]['mois'] == currentMois)
+                {
+                    console.log("if");
+                    temp.push(datas[i]);
+                }
+                else {
+                    console.log("else");
+                    console.log(currentMois);
+                    tabMois.push(temp);
+                    temp = [];
+                    currentDate.setMonth(currentDate.getMonth()+1);
+                    currentMois = currentDate.getMonth()+1;
+
+                    temp.push(datas[i]);
+
+                }
+
+            }
+            tabMois.push(temp);
+            return tabMois;
 
         }
 

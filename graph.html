@@ -23,8 +23,10 @@
         var allDatas;
         var dotos = [];
         var tab = [1,2,3,4,5,6,7];
-        var date = new Date(2018,11,16);
-        console.log(date.getDay());
+        var date = new Date(2018,00,16);
+
+
+
 
 
 
@@ -36,26 +38,7 @@
                 labels: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
                 datasets: [{
                     label: 'kW/h',
-                    data: tab   ,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(255, 159, 212, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(255, 159, 212, 1)'
-                    ],
-                    borderWidth: 1
+                    data: tab
                 }]
             },
             options: {
@@ -69,275 +52,161 @@
             }
         });
 
-            var tabUpdate = function() {
-                var debut = (document.getElementById('debut').value).toString();
-                var fin = (document.getElementById('fin').value).toString();
-                var datas = periode(allDatas, debut, fin);
-                var tabd = decoupeJour(datas);
-                console.log(tabd)
+        var parseDateCal = function(dateCal) {
+            var annee = dateCal.toString().slice(0,4);
+            var mois = dateCal.toString().slice(5,7);
+            var jour = dateCal.toString().slice(8,10);
 
-                myChart['config']['data']['datasets']['0']['data'] = chartData(tabd,0);
-                myChart['config']['data']['labels'] = chartLabel(tabd);
-                myChart.update();
+            var res = new Date(annee,mois-1,jour);
+            return res;
 
+        };
+
+        var tabUpdate = function() {
+            var debut = parseDateCal(document.getElementById('debut').value);
+            var fin = parseDateCal(document.getElementById('fin').value);
+            var datas = periode(allDatas, debut, fin);
+            var tabd = decoupeAnnee(datas);
+            console.log(tabd);
+
+            myChart['config']['data']['datasets']['0']['data'] = chartData(tabd,0);
+            myChart['config']['data']['labels'] = chartLabel(tabd);
+            myChart.update();
+
+        }
+        var chartData = function(datas,filtre) {
+            var temp = [];
+            var res = [];
+
+            for (var i = 0; i < datas.length; i++) {
+                temp = stats(datas[i])[filtre];
+                res.push(temp);
             }
-            var chartData = function(datas,filtre) {
-                var temp = [];
-                var res = [];
+            return res;
+        }
 
-                for (var i = 0; i < datas.length; i++) {
-                    temp = stats(datas[i])[filtre];
-                    res.push(temp);
-                }
-                return res;
-
-
+        var chartLabel = function(datas){
+            var res = [];
+            for (var i = 0; i < datas.length; i++) {
+                res.push(i.toString());
             }
-
-            var chartLabel = function(datas){
-                var res = [];
-                for (var i = 0; i < datas.length; i++) {
-                    res.push(i.toString());
-                }
-                console.log(res);
-                return res;
-            }
+            console.log(res);
+            return res;
+        }
 
 
-            var moisIncr = function(mois)
-            {
-                var m;
-                if(typeof(mois) === 'string')
+        var decoupeAnnee = function(datas) {
+            var tabAnnee = [];
+            var temp = [];
+            var currentAnnee = parseDateCal(document.getElementById('debut').value).getFullYear();
+
+            for (var i = 0; i < datas.length; i++) {
+                if(datas[i]['annee'] == currentAnnee)
                 {
-                    console.log(typeof(mois));
-                    m = parseInt(mois);
+                    console.log("if");
+                    temp.push(datas[i]);
                 }
                 else {
-                    m = mois;
+                    console.log("else");
+                    console.log(currentAnnee);
+                    tabAnnee.push(temp);
+                    temp = [];
+                    currentAnnee += 1;
+                    temp.push(datas[i]);
+
                 }
-
-
-                if(m < 12)
-                {
-                    return m + 1;
-                }
-                else {
-                    return 1;
-                }
-            }
-
-            var formatDate = function(date) {
-                var annee = date.slice(0,4);
-                var mois = date.slice(5,7);
-                var jour = date.slice(8,10);
-
-                var res = annee + '/' + mois + '/' + jour;
-                console.log(res);
-
-                return res;
-            }
-
-            var decoupeMois = function(datas) {
-                var tabMois = [];
-                var temp = []
-                var currentMois = (document.getElementById('debut').value).toString().slice(5,7);
-
-                for (var i = 0; i < datas.length; i++) {
-                    if(datas[i]['mois'] == currentMois)
-                    {
-                        console.log("if");
-
-                        temp.push(datas[i]);
-                    }
-                    else {
-                        console.log("else");
-                        tabMois.push(temp);
-                        temp = [];
-                        currentMois = moisIncr(currentMois);
-                        temp.push(datas[i]);
-
-                    }
-                }
-                tabMois.push(temp);
-                return tabMois;
-            }
-
-            var decoupeJour = function(datas) {
-                var tabJour = [];
-                var temp = [];
-                var currentJour = parseInt((document.getElementById('debut').value).toString().slice(8,10));
-
-                for (var i = 0; i < datas.length; i++) {
-                    if(datas[i]['jour'] == currentJour)
-                    {
-                        console.log("if");
-
-                        temp.push(datas[i]);
-                    }
-                    else {
-                        console.log(currentJour);
-                        tabJour.push(temp);
-                        temp = [];
-                        currentJour += 1;
-                        temp.push(datas[i]);
-
-                    }
-                }
-                tabJour.push(temp);
-                return tabJour;
 
             }
+            tabAnnee.push(temp);
+            return tabAnnee;
 
-            var decoupeAnnee = function(datas) {
-                var tabAnnee = [];
-                var temp = [];
-                var currentAnnee = parseInt((document.getElementById('debut').value).toString().slice(0,4));
+        }
 
-                for (var i = 0; i < datas.length; i++) {
-                    if(datas[i]['annee'] == currentAnnee)
-                    {
-                        console.log("if");
+        var openFile = function(event) {
+            var input = event.target;
 
-                        temp.push(datas[i]);
-                    }
-                    else {
-                        console.log(currentAnnee);
-                        tabAnnee.push(temp);
-                        temp = [];
-                        currentAnnee += 1;
-                        temp.push(datas[i]);
 
-                    }
-                }
-                tabAnnee.push(temp);
-                return tabAnnee;
+            var reader = new FileReader();
+            reader.onload = function(){
+                var text = reader.result;
+                var node = document.getElementById('output');
+                var js = JSON.parse(text);
+                putZero(js['data']);
+                allDatas = js['data'];
+                tabUpdate();
 
+
+                };
+            reader.readAsText(input.files[0]);
+        };
+
+        var stats = function (datas) {
+            var somme = 0;
+            var compt = 0;
+            var moy = 0;
+            var res = [];
+
+            for (var i=0; i<datas.length;i++) {
+                somme += parseFloat(datas[i]['valeur']);
+                compt++;
             }
+            moy = somme/compt;
+            res.push(somme);
+            res.push(compt);
+            res.push(moy);
 
-            var openFile = function(event) {
-                var input = event.target;
+            return res;
+        };
 
-                var reader = new FileReader();
-                reader.onload = function(){
-                    var text = reader.result;
-                    var node = document.getElementById('output');
-                    var js = JSON.parse(text);
-                    putZero(js['data']);
-                    allDatas = js['data'];
-                    tabUpdate();
+        var periode = function (datas,debut,fin) {
 
+            if(debut < fin) {
+                var a1 = debut.getFullYear();
+                var m1 = debut.getMonth()+1;
+                var j1 = debut.getDay();
 
-                    };
-                reader.readAsText(input.files[0]);
+                var a2 = fin.getFullYear();
+                var m2 = fin.getMonth()+1;
+                var j2 = fin.getDay();
 
-
-
-            };
-
-            var stats = function (datas) {
-                var somme = 0;
+                var tab = [];
+                var cond = false;
                 var compt = 0;
-                var moy = 0;
-                var res = [];
 
-                for (var i=0; i<datas.length;i++) {
-                    somme += parseFloat(datas[i]['valeur']);
+                for (var d in datas) {
+                    if(datas[compt]['annee'] == a1 && datas[compt]['mois'] == m1 && datas[compt]['jour'] == j1)
+                    {
+                        cond = true;
+                    }
+                    else if(datas[compt]['annee'] == a2 && datas[compt]['mois'] == m2 && datas[compt]['jour'] == j2)
+                    {
+                        cond = false;
+                    }
+
+                    if(cond)
+                    {
+                        tab.push(datas[compt]);
+                    }
                     compt++;
                 }
-                moy = somme/compt;
-                res.push(somme);
-                res.push(compt);
-                res.push(moy);
+                return tab;
+            }
+            else {
+                console.log("debut supérieur fin");
+                return new Error("debut supérieur fin");
+            }
+        };
 
-                return res;
-            };
+        var putZero = function (datas) {
 
-            var periode = function (datas,debut,fin) {
-
-                if(dateInfEgale(debut,fin)) {
-                    var a1 = debut.slice(0,4);
-                    var m1 = debut.slice(5,7);
-                    var j1 = debut.slice(8,10);
-
-                    var a2 = fin.slice(0,4);
-                    var m2 = fin.slice(5,7);
-                    var j2 = fin.slice(8,10);
-
-                    var tab = [];
-                    var cond = false;
-                    var compt = 0;
-
-                    for (var d in datas) {
-                        if(datas[compt]['annee'] == a1 && datas[compt]['mois'] == m1 && datas[compt]['jour'] == j1)
-                        {
-                            cond = true;
-                        }
-                        else if(datas[compt]['annee'] == a2 && datas[compt]['mois'] == m2 && datas[compt]['jour'] == j2)
-                        {
-                            cond = false;
-                        }
-
-                        if(cond)
-                        {
-                            tab.push(datas[compt]);
-                        }
-                        compt++;
-                    }
-                    return tab;
-                }
-                else {
-                    console.log("debut supérieur fin");
-                    return new Error("debut supérieur fin");
-                }
-            };
-
-            var dateInfEgale = function (debut,fin) {
-
-                var a1 = debut.slice(0,4);
-                var m1 = debut.slice(5,7);
-                var j1 = debut.slice(8,10);
-
-                var a2 = fin.slice(0,4);
-                var m2 = fin.slice(5,7);
-                var j2 = fin.slice(8,10);
-
-                if(a1 < a2) {
-                    return true;
-                }
-                else if(a1 == a2)
+            for (var i = 0; i < datas.length; i++) {
+                if(datas[i]['valeur'] == "-1")
                 {
-                    if(m1 < m2) {
-                        return true;
-                    }
-                    else if(m1 == m2)
-                    {
-                        if(j1 <= j2) {
-                            return true;
-                        }
-                        else {
-                            return false;
-                        }
-                    }
-                    else {
-                        return false;
-                    }
+                    datas[i]['valeur'] = "0";
+                    console.log("test");
                 }
-                else {
-                    return false;
-                }
-
-            };
-
-            var putZero = function (datas) {
-
-                for (var i = 0; i < datas.length; i++) {
-                    if(datas[i]['valeur'] == "-1")
-                    {
-                        datas[i]['valeur'] = "0";
-                        console.log("test");
-                    }
-                }
-            };
+            }
+        };
 
 
 

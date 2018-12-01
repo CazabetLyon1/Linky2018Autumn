@@ -23,8 +23,8 @@
         var allDatas;
         var dotos = [];
         var tab = [1,2,3,4,5,6,7];
-        var d = new Date(2017,10,01);
-        var dd = new Date(2017,10,01);
+
+
 
 
 
@@ -36,7 +36,7 @@
 
         var ctx = document.getElementById("myChart").getContext('2d');
         var myChart = new Chart(ctx, {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
                 datasets: [{
@@ -69,11 +69,11 @@
             var debut = parseDateCal(document.getElementById('debut').value);
             var fin = parseDateCal(document.getElementById('fin').value);
             var datas = periode(allDatas, debut, fin);
-            var tabd = decoupeJour(datas);
+            var tabd = decoupeAnnee(datas);
             console.log(tabd);
 
             myChart['config']['data']['datasets']['0']['data'] = chartData(tabd,0);
-            myChart['config']['data']['labels'] = chartLabel(tabd,"mois");
+            myChart['config']['data']['labels'] = chartLabel(tabd,"annee");
             myChart.update();
 
         }
@@ -89,14 +89,14 @@
         }
 
         var chartLabel = function(datas,type){
-            var res = [];
+            /*var res = [];
             for (var i = 0; i < datas.length; i++) {
                 res.push(i.toString());
             }
             console.log(res);
-            return res;
+            return res;*/
 
-            /*if(type == "mois"){
+            if(type == "mois"){
 
                 var temp;
                 var res = [];
@@ -110,7 +110,33 @@
                     }
                 }
             }
-            return res;*/
+
+            else if(type == "jour") {
+                var temp;
+                var res = [];
+
+                for (var i = 0; i < datas.length; i++) {
+                    if(typeof datas[i][0] !== 'undefined') {
+                        temp = datas[i][0]['jour'];
+                        temp += "/";
+                        temp += datas[i][0]['mois'];
+                        res.push(temp);
+                    }
+                }
+            }
+
+            else if(type == "annee") {
+                var temp;
+                var res = [];
+
+                for (var i = 0; i < datas.length; i++) {
+                    if(typeof datas[i][0] !== 'undefined') {
+                        temp = datas[i][0]['annee'];
+                        res.push(temp);
+                    }
+                }
+            }
+            return res;
         }
 
 

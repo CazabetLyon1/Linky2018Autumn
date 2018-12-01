@@ -33,9 +33,10 @@
 
 
 
+
         var ctx = document.getElementById("myChart").getContext('2d');
         var myChart = new Chart(ctx, {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
                 datasets: [{
@@ -68,11 +69,11 @@
             var debut = parseDateCal(document.getElementById('debut').value);
             var fin = parseDateCal(document.getElementById('fin').value);
             var datas = periode(allDatas, debut, fin);
-            var tabd = decoupeMois(datas);
+            var tabd = decoupeJour(datas);
             console.log(tabd);
 
             myChart['config']['data']['datasets']['0']['data'] = chartData(tabd,0);
-            myChart['config']['data']['labels'] = chartLabel(tabd);
+            myChart['config']['data']['labels'] = chartLabel(tabd,"mois");
             myChart.update();
 
         }
@@ -87,13 +88,29 @@
             return res;
         }
 
-        var chartLabel = function(datas){
+        var chartLabel = function(datas,type){
             var res = [];
             for (var i = 0; i < datas.length; i++) {
                 res.push(i.toString());
             }
             console.log(res);
             return res;
+
+            /*if(type == "mois"){
+
+                var temp;
+                var res = [];
+
+                for (var i = 0; i < datas.length; i++) {
+                    if(typeof datas[i][0] !== 'undefined') {
+                        temp = datas[i][0]['mois'];
+                        temp += "/";
+                        temp += datas[i][0]['annee'];
+                        res.push(temp);
+                    }
+                }
+            }
+            return res;*/
         }
 
 
@@ -147,6 +164,31 @@
 
         }
 
+        var decoupeJour = function(datas) {
+            var tabJour = [];
+            var temp = [];
+            var currentDate = parseDateCal(document.getElementById('debut').value);
+
+            for (var i = 0; i < datas.length; i++) {
+                if(datas[i]['jour'] == currentDate.getDate())
+                {
+                    temp.push(datas[i]);
+                }
+                else {
+                    tabJour.push(temp);
+                    temp = [];
+                    currentDate.setDate(currentDate.getDate()+1);
+
+                    temp.push(datas[i]);
+
+                }
+
+            }
+            tabJour.push(temp);
+            return tabJour;
+
+        }
+
         var openFile = function(event) {
             var input = event.target;
 
@@ -176,9 +218,9 @@
                 compt++;
             }
             moy = somme/compt;
-            res.push(somme);
+            res.push(somme.toFixed(2));
             res.push(compt);
-            res.push(moy);
+            res.push(moy.toFixed(2));
 
             return res;
         };
@@ -186,17 +228,17 @@
         var periode = function (datas,debut,fin) {
 
             if(+debut <= +fin) {
-                var a1 = debut.getFullYear();
+                /*var a1 = debut.getFullYear();
                 var m1 = debut.getMonth()+1;
                 var j1 = debut.getDate();
 
                 var a2 = fin.getFullYear();
                 var m2 = fin.getMonth()+1;
-                var j2 = fin.getDate();
+                var j2 = fin.getDate();*/
 
                 var tab = [];
-                var cond = false;
-                var compt = 0;
+                /*var cond = false;
+                var compt = 0;*/
 
                 /*for (var d in datas) {
                     if(datas[compt]['annee'] == a1 && datas[compt]['mois'] == m1 && datas[compt]['jour'] == j1)

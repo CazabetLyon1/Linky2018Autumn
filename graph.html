@@ -13,16 +13,24 @@
         <input type="date" id="fin">
 
         <input type='file' accept='json' onchange='openFile(event)'><br>
-        <input type='button' value='update' onclick='update()'>
-        <div id='output'>
-        ...
-        </div>
+        <input type='button' accept='json' value="annee" onclick="tabUpdate('annee')"><br>
+        <input type='button' accept='json' value="mois" onclick="tabUpdate('mois')"><br>
+        <input type='button' accept='json' value="jour" onclick="tabUpdate('jour')"><br>
+
+
+
+        <form action="">
+            <input type="radio" id="btnAnnee" name="btnType" value="annee"> Annee<br>
+            <input type="radio" id="btnMois" name="btnType" value="mois" checked="true"> Mois<br>
+            <input type="radio" id="btnJour" name="btnType" value="jour"> Jour<br>
+        </form>
 
 
         <script type="text/javascript">
         var allDatas;
         var dotos = [];
         var tab = [1,2,3,4,5,6,7];
+
 
 
 
@@ -41,6 +49,9 @@
                 labels: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
                 datasets: [{
                     label: 'kW/h',
+                    backgroundColor: 'rgba(20, 20, 200, 0.2)',
+    				borderColor: 'rgba(20, 20, 200, 0.3)',
+    				borderWidth: 5,
                     data: tab
                 }]
             },
@@ -65,15 +76,14 @@
 
         };
 
-        var tabUpdate = function() {
+        var tabUpdate = function(type) {
             var debut = parseDateCal(document.getElementById('debut').value);
             var fin = parseDateCal(document.getElementById('fin').value);
             var datas = periode(allDatas, debut, fin);
-            var tabd = decoupeAnnee(datas);
-            console.log(tabd);
+            var tabd = decoupeType(datas,type);
 
             myChart['config']['data']['datasets']['0']['data'] = chartData(tabd,0);
-            myChart['config']['data']['labels'] = chartLabel(tabd,"annee");
+            myChart['config']['data']['labels'] = chartLabel(tabd,type);
             myChart.update();
 
         }
@@ -215,6 +225,19 @@
 
         }
 
+        var decoupeType = function(datas,type) {
+            if(type == "annee")
+                return decoupeAnnee(datas);
+            else if (type == "mois")
+                return decoupeMois(datas);
+            else if (type == "jour")
+                return decoupeJour(datas);
+            else {
+                return console.error("error mauvais type decoupe");
+            }
+
+        }
+
         var openFile = function(event) {
             var input = event.target;
 
@@ -226,7 +249,19 @@
                 var js = JSON.parse(text);
                 putZero(js['data']);
                 allDatas = js['data'];
-                tabUpdate();
+                if(document.getElementById("btnJour").checked){
+                    tabUpdate("jour");
+                }
+                else if (document.getElementById("btnMois").checked) {
+                    tabUpdate("mois");
+                }
+                else if (document.getElementById("btnAnnee").checked) {
+                    tabUpdate("annee");
+                }
+                else {
+                    console.error("error");
+                }
+
 
 
                 };

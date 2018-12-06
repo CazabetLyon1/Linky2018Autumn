@@ -4,7 +4,7 @@ Projet :
         login(linky)
         affichage (courbe)
             zoom sur courbe
-            choix des dates (calendrier)
+            //choix des dates (calendrier)
             prix estimé selon contrat
             imbrication (ie : cliquer sur un mois pour détails semaines)
             statistiques
@@ -12,5 +12,7 @@ Projet :
             message de sensibilisation
 
             detecté les matériels utilisé => machine learning python (sklearn)NMF
-            envoyer mail RC
-            installer chart.js
+            
+            recup données contrat
+            prix en fonction du contrat
+            courbes dynamiques

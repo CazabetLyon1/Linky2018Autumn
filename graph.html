@@ -9,13 +9,34 @@
         <div style="width:800px;">
             <canvas id="myChart"></canvas>
         </div>
-        <input type="date" id="debut">
-        <input type="date" id="fin">
+        <input type="date" max="2018-09-01" min="2017-10-07" id="debut">
+        <input type="date" max="2018-09-01" min="2017-10-07" id="fin">
 
         <input type='file' accept='json' onchange='openFile(event)'><br>
-        <input type='button' accept='json' value="annee" onclick="tabUpdate('annee')"><br>
-        <input type='button' accept='json' value="mois" onclick="tabUpdate('mois')"><br>
-        <input type='button' accept='json' value="jour" onclick="tabUpdate('jour')"><br>
+        <input type='button' value="annee" onclick="tabUpdate('annee')"><br>
+        <input type='button' value="mois" onclick="tabUpdate('mois')"><br>
+        <input type='button' value="jour" onclick="tabUpdate('jour')"><br>
+
+        <input type='button' value="+Annee Debut" onclick="setDebut('annee',-1)"><br>
+        <input type='button' value="-Annee Debut" onclick="setDebut('annee',1)"><br>
+
+        <input type='button' value="+Mois Debut" onclick="setDebut('mois',-1)"><br>
+        <input type='button' value="-Mois Debut" onclick="setDebut('mois',1)"><br>
+
+        <input type='button' value="+Jour Debut" onclick="setDebut('jour',-1)"><br>
+        <input type='button' value="-Jour Debut" onclick="setDebut('jour',1)"><br>
+
+
+
+
+        <input type='button' value="+Annee Fin" onclick="setFin('annee',1)"><br>
+        <input type='button' value="-Annee Fin" onclick="setFin('annee',-1)"><br>
+
+        <input type='button' value="+Mois Fin" onclick="setFin('mois',1)"><br>
+        <input type='button' value="-Mois Fin" onclick="setFin('mois',-1)"><br>
+
+        <input type='button' value="+Jour Fin" onclick="setFin('jour',1)"><br>
+        <input type='button' value="-Jour Fin" onclick="setFin('jour',-1)"><br>
 
 
 
@@ -30,6 +51,7 @@
         var allDatas;
         var dotos = [];
         var tab = [1,2,3,4,5,6,7];
+        var currentType;
 
 
 
@@ -76,7 +98,36 @@
 
         };
 
+        var dateToDateCal = function(date) {
+            var res = "";
+            res += date.getFullYear();
+            res += "-";
+
+            if((date.getMonth()+1).toString().length == 2)
+                res += date.getMonth()+1;
+            else {
+                res += 0;
+                res += date.getMonth()+1;
+            }
+            res += "-"
+
+            if((date.getDate()).toString().length == 2)
+                res += date.getDate();
+            else {
+                res += 0;
+                res += date.getDate();
+            }
+
+            return res;
+        };
+
         var tabUpdate = function(type) {
+
+            if(type == undefined)
+                type = CurrentType;
+            else {
+                CurrentType = type;
+            }
             var debut = parseDateCal(document.getElementById('debut').value);
             var fin = parseDateCal(document.getElementById('fin').value);
             var datas = periode(allDatas, debut, fin);
@@ -149,6 +200,60 @@
             return res;
         }
 
+        var setDebut = function(type,nb){
+            var date = parseDateCal(document.getElementById('debut').value);
+
+            if(type == "mois")
+                date.setMonth(date.getMonth()+nb);
+            else if (type == "jour")
+                date.setDate(date.getDate()+nb);
+            else if (type == "annee")
+                date.setFullYear(date.getFullYear()+nb);
+
+
+            date = dateToDateCal(date);
+            if(date >= document.getElementById('debut').min
+                && date <= document.getElementById('debut').max
+                && date <= document.getElementById('fin').value)
+            {
+                document.getElementById('debut').value = date;
+                tabUpdate();
+            }
+            else if (date < document.getElementById('debut').min) {
+                date = parseDateCal(document.getElementById('debut').min);
+                date = dateToDateCal(date);
+                document.getElementById('debut').value = date;
+                tabUpdate();
+            }
+
+        }
+
+        var setFin = function(type,nb){
+            var date = parseDateCal(document.getElementById('fin').value);
+
+            if(type == "mois")
+                date.setMonth(date.getMonth()+nb);
+            else if (type == "jour")
+                date.setDate(date.getDate()+nb);
+            else if (type == "annee")
+                date.setFullYear(date.getFullYear()+nb);
+
+
+            date = dateToDateCal(date);
+            if(date >= document.getElementById('fin').min
+                && date <= document.getElementById('fin').max
+                && date >= document.getElementById('debut').value)
+            {
+                document.getElementById('fin').value = date;
+                tabUpdate();
+            }
+            else if (date > document.getElementById('fin').max) {
+                date = parseDateCal(document.getElementById('fin').max);
+                date = dateToDateCal(date);
+                document.getElementById('fin').value = date;
+                tabUpdate();
+            }
+        }
 
         var decoupeAnnee = function(datas) {
             var tabAnnee = [];
@@ -247,6 +352,7 @@
                 var text = reader.result;
                 var node = document.getElementById('output');
                 var js = JSON.parse(text);
+                console.log(js['data']);
                 putZero(js['data']);
                 allDatas = js['data'];
                 if(document.getElementById("btnJour").checked){
@@ -324,7 +430,6 @@
                         tab.push(datas[i]);
                     }
                 }
-                console.log(tab);
                 return tab;
             }
             else {

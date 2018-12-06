@@ -52,6 +52,7 @@
         var dotos = [];
         var tab = [1,2,3,4,5,6,7];
         var currentType;
+        var currentFiltre = 0;
 
 
 
@@ -121,7 +122,7 @@
             return res;
         };
 
-        var tabUpdate = function(type) {
+        var tabUpdate = function(type,filtre) {
 
             if(type == undefined)
                 type = CurrentType;
@@ -133,7 +134,7 @@
             var datas = periode(allDatas, debut, fin);
             var tabd = decoupeType(datas,type);
 
-            myChart['config']['data']['datasets']['0']['data'] = chartData(tabd,0);
+            myChart['config']['data']['datasets']['0']['data'] = chartData(tabd,currentFiltre);
             myChart['config']['data']['labels'] = chartLabel(tabd,type);
             myChart.update();
 

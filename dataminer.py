@@ -17,11 +17,14 @@ import pprint
 URL_LOGIN = 'https://espace-client-connexion.enedis.fr'
 URL_API_BASE = 'https://espace-client-particuliers.enedis.fr/group/espace-particuliers'
 URL_DATE_ACTIV = '/courbe-de-charge'
+URL_INFO_CONTRAT = 'https://espace-client-particuliers.enedis.fr/group/espace-particuliers/accueil'
 URL_API_LOGIN = '/auth/UI/Login'
 URL_API_HOME = '/home'
 URL_API_DATA = '/suivi-de-consommation'
 
 date_activ = ""
+puissance_souscrite = 0
+fournisseur = ""
 
 class donneeLinky:
     def __init__(self, annee, mois, jour, heure, val):
@@ -135,6 +138,31 @@ def login(username, password):
         temp = str(int(res[9])-1)
         global date_activ
         date_activ += slice + temp
+
+
+        info = session.get(URL_INFO_CONTRAT, allow_redirects = False)
+        if 302 == info.status_code:
+            #des fois on a un status 302 (je sais pas pourquoi) donc on renvoie la requete et ca marche
+            info = session.get(URL_INFO_CONTRAT, allow_redirects = False)
+
+        pattern = re.compile(r'\d kVA')
+        matches = pattern.findall(info.text)
+        res = matches[0]
+        slice = res[0]
+        global puissance_souscrite
+        puissance_souscrite = int(slice)
+
+        pattern = re.compile(r'TxtSizeMedium">\D*</p>', re.MULTILINE)
+        matches = pattern.findall(info.text)
+        res = matches[0]
+        slice = res[15:len(slice)-5]
+        global fournisseur
+        fournisseur = slice
+
+        print(date_activ)
+        print(puissance_souscrite)
+        print(fournisseur)
+
 
 
         return session

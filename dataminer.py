@@ -220,7 +220,7 @@ def importCsv(filepath):
     with open(filepath, newline='') as csvfile:
         spamreader = csv.reader(csvfile, delimiter=';', quotechar='|')
         for row in spamreader:
-            if(cont > 44):
+            if(cont > 4):
                 derp=donneeLinky((''.join(row)[0:4]),
                                  (''.join(row)[5:7]),
                                  (''.join(row)[8:10]),
@@ -332,7 +332,7 @@ def get_heure_now():
 
 print((str(sys.argv)))
 ses = login((str(sys.argv))[1],(str(sys.argv))[1])
-don = recup_donnee(ses,param,date_activ,get_heure_now())
+don = recup_donnee(ses,heure,date_activ,get_heure_now())
 transDon = transfoDonee(derp,param,date_activ,get_heure_now())
 donnneToCsv(transDon,(str(sys.argv))[1]+'.csv')
 csvToJson((str(sys.argv))[1]+'.csv',(str(sys.argv))[1]+'.json')

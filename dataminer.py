@@ -139,7 +139,8 @@ def login(username, password):
         global date_activ
         date_activ += slice + temp
 
-
+        #recuperation info contrat
+            #puissance_souscrite
         info = session.get(URL_INFO_CONTRAT, allow_redirects = False)
         if 302 == info.status_code:
             #des fois on a un status 302 (je sais pas pourquoi) donc on renvoie la requete et ca marche
@@ -151,7 +152,8 @@ def login(username, password):
         slice = res[0]
         global puissance_souscrite
         puissance_souscrite = int(slice)
-
+        
+            #fournisseur
         pattern = re.compile(r'TxtSizeMedium">\D*</p>', re.MULTILINE)
         matches = pattern.findall(info.text)
         res = matches[0]

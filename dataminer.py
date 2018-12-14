@@ -129,15 +129,16 @@ def login(username, password):
             #des fois on a un status 302 (je sais pas pourquoi) donc on renvoie la requete et ca marche
             s = session.get(URL_API_BASE + URL_DATE_ACTIV, allow_redirects = False)
 
-
+            #date_activ
         pattern = re.compile(r'\d\d/\d\d/\d\d\d\d')
         matches = pattern.findall(s.text)
 
-        res = matches[0]
-        slice = res[0:9]
-        temp = str(int(res[9])-1)
-        global date_activ
-        date_activ += slice + temp
+        if matches != []:
+            res = matches[0]
+            slice = res[0:9]
+            temp = str(int(res[9])-1)
+            global date_activ
+            date_activ += slice + temp
 
         #recuperation info contrat
             #puissance_souscrite
@@ -148,18 +149,22 @@ def login(username, password):
 
         pattern = re.compile(r'\d kVA')
         matches = pattern.findall(info.text)
-        res = matches[0]
-        slice = res[0]
-        global puissance_souscrite
-        puissance_souscrite = int(slice)
-        
+
+        if matches != []:
+            res = matches[0]
+            slice = res[0]
+            global puissance_souscrite
+            puissance_souscrite = int(slice)
+
             #fournisseur
         pattern = re.compile(r'TxtSizeMedium">\D*</p>', re.MULTILINE)
         matches = pattern.findall(info.text)
-        res = matches[0]
-        slice = res[15:len(slice)-5]
-        global fournisseur
-        fournisseur = slice
+        if matches != []:
+
+            res = matches[0]
+            slice = res[15:len(slice)-5]
+            global fournisseur
+            fournisseur = slice
 
         print(date_activ)
         print(puissance_souscrite)
@@ -257,10 +262,19 @@ def transfoDonee (datas, param, debut, fin):
 
 def csvToJson(csvpath,jsonpath):
     csvfile = open(csvpath, 'r')
-    jsonfile = open(jsonpath, 'w')
+    jsonfile = open(jsonpath, 'w+')
 
     fieldnames = ("annee","mois","jour","heure","valeur")
     reader = csv.DictReader( csvfile, fieldnames)
+
+
+    tabDatas = {}
+    tabDatas['fournisseur'] = fournisseur
+    tabDatas['puissance_souscrite'] = puissance_souscrite
+    tabDatas['date_activ'] = date_activ
+    tabDatas['date_recup'] = get_heure_now()
+
+    json.dump(tabDatas,jsonfile)
 
     cond = 0
     for row in reader:
@@ -273,7 +287,7 @@ def csvToJson(csvpath,jsonpath):
 
 ###################################################
 def donnneToCsv(datas, filepath):
-    with open(filepath,'w',newline='') as csvfile:
+    with open(filepath,'w+',newline='') as csvfile:
         a = csv.writer(csvfile, delimiter=',')
         tab=[['Annee','Mois','Jour','Heure','Valeur']]
         for int in datas:
@@ -316,13 +330,12 @@ def get_heure_now():
 #donnneToCsv(jesaispo,'test.csv')
 #donnneToCsv(trans,'test1.csv')
 
-
-
-
-
-
-
-
+print((str(sys.argv)))
+ses = login((str(sys.argv))[1],(str(sys.argv))[1])
+don = recup_donnee(ses,param,date_activ,get_heure_now())
+transDon = transfoDonee(derp,param,date_activ,get_heure_now())
+donnneToCsv(transDon,(str(sys.argv))[1]+'.csv')
+csvToJson((str(sys.argv))[1]+'.csv',(str(sys.argv))[1]+'.json')
 
 
 

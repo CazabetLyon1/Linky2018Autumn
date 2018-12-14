@@ -1,57 +1,58 @@
 <!-- Modal Graphique-->
-      <div class="modal fade" id="ModalGraphique">
-        <div class="modal-dialog">
-          <div class="modal-content">
+<div class="modal fade" id="ModalGraphique">
+  <div class="modal-dialog">
+    <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-              <h4 class="modal-title">Importer les données depuis Enedis</h4>
-              <button type="button" class="close" data-dismiss="modal">X</button>
-            </div>
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Importer les données depuis Enedis</h4>
+        <button type="button" class="close" data-dismiss="modal">X</button>
+      </div>
 
-            <!-- Modal body -->
-            <div class="modal-body">
-              <div class="form-group">
-                <label for="usr">Email:</label>
-                <input type="text" class="form-control" id="usr" name="username"></input>
-              </div>
-              <div class="form-group">
-                <label for="pwd">Mot de passe:</label>
-                <input type="password" class="form-control" id="pwd" name="password"></input>
-              </div>
-            </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Connection</button>
-            </div>
-          </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="usr">Email:</label>
+          <input type="text" class="form-control" id="usr" name="username"></input>
+        </div>
+        <div class="form-group">
+          <label for="pwd">Mot de passe:</label>
+          <input type="password" class="form-control" id="pwd" name="password"></input>
         </div>
       </div>
 
-      <!-- Modal Reset-->
-      <div class="modal fade" id="ModalReset">
-        <div class="modal-dialog">
-          <div class="modal-content">
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="test()">Connection</button>
+      </div>
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-              <h4 class="modal-title">Reset</h4>
-              <button type="button" class="close" data-dismiss="modal">X</button>
-            </div>
+    </div>
+  </div>
+</div>
 
-            <!-- Modal body -->
-            <div class="modal-body">
-              <div class="text-center">
-               <h2> Attention !</h2> Vous êtes sur le point d'effacer toutes les données, vous allez devoir réimporter les données de nouveau pour obtenir un graphique. <br/>
-               Êtes-vous sur de vouloir reset les informations ?
-             </div>
-             <div class="modal-footer">
-              <button type="button" class="btn btn-success mr-auto" data-dismiss="modal">Non</button>
-              <button type="button" class="btn btn-danger float-right">Oui</button>
-            </div>
-          </div>
+<!-- Modal Reset-->
+<div class="modal fade" id="ModalReset">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Reset</h4>
+        <button type="button" class="close" data-dismiss="modal">X</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="text-center">
+         <h2> Attention !</h2> Vous êtes sur le point d'effacer toutes les données, vous allez devoir réimporter les données de nouveau pour obtenir un graphique. <br/>
+         Êtes-vous sur de vouloir reset les informations ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success mr-auto" data-dismiss="modal">Non</button>
+          <button type="button" class="btn btn-danger float-right">Oui</button>
         </div>
       </div>
     </div>
+  </div>
+</div>

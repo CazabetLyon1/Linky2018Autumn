@@ -294,28 +294,27 @@ def get_heure_now():
 
 
 ########### MAIN ###########
-csvToJson('test.csv','test.json')
-print('fini')
-
-
-param = heure
-debut = "01/10/2018"
-fin = "08/10/2018"
-
-
-ses = login("catounono@aol.com","Elioteliot@69")
-print ("aujourd'hui : ",get_heure_now())
-print ("date activation : ",date_activ)
-
-derp = recup_donnee(ses,param,date_activ,get_heure_now())
-trans = importCsv('data.csv')
-# transfoDonee(derp,param,date_activ,get_heure_now())
-
-
-jesaispo = importCsv('data.csv')
-
-donnneToCsv(jesaispo,'test.csv')
-donnneToCsv(trans,'test1.csv')
+#csvToJson('test.csv','test.json')
+#
+#
+#param = heure
+#debut = "01/10/2018"
+#fin = "08/10/2018"
+#
+#
+#ses = login("catounono@aol.com","Elioteliot@69")
+#print ("aujourd'hui : ",get_heure_now())
+#print ("date activation : ",date_activ)
+#
+#derp = recup_donnee(ses,param,date_activ,get_heure_now())
+#trans = importCsv('data.csv')
+## transfoDonee(derp,param,date_activ,get_heure_now())
+#
+#
+#jesaispo = importCsv('data.csv')
+#
+#donnneToCsv(jesaispo,'test.csv')
+#donnneToCsv(trans,'test1.csv')
 
 
 

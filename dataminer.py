@@ -127,7 +127,8 @@ def login(username, password):
 
         if 302 == s.status_code:
             #des fois on a un status 302 (je sais pas pourquoi) donc on renvoie la requete et ca marche
-            s = session.get(URL_API_BASE + URL_DATE_ACTIV, allow_redirects = False)
+            s = session.get(URL_API_BASE + URL_DATE_ACTIV, allow_redirects = True)
+
 
             #date_activ
         pattern = re.compile(r'\d\d/\d\d/\d\d\d\d')
@@ -145,7 +146,7 @@ def login(username, password):
         info = session.get(URL_INFO_CONTRAT, allow_redirects = False)
         if 302 == info.status_code:
             #des fois on a un status 302 (je sais pas pourquoi) donc on renvoie la requete et ca marche
-            info = session.get(URL_INFO_CONTRAT, allow_redirects = False)
+            info = session.get(URL_INFO_CONTRAT, allow_redirects = True)
 
         pattern = re.compile(r'\d kVA')
         matches = pattern.findall(info.text)
@@ -202,7 +203,7 @@ def recup_donnee(session, resource_id, debut=None, fin=None):
 
     if 302 == requete.status_code:
         #des fois on a un status 302 (je sais pas pourquoi) donc on renvoie la requete et ca marche
-        requete = session.post(URL_API_BASE + URL_API_DATA, allow_redirects=False, data=formData, params=queryStringParameters)
+        requete = session.post(URL_API_BASE + URL_API_DATA, allow_redirects=True, data=formData, params=queryStringParameters)
 
     res = requete.json()
 
@@ -268,22 +269,28 @@ def csvToJson(csvpath,jsonpath):
     reader = csv.DictReader( csvfile, fieldnames)
 
 
-    tabDatas = {}
+
+    tabDatas={}
     tabDatas['fournisseur'] = fournisseur
     tabDatas['puissance_souscrite'] = puissance_souscrite
     tabDatas['date_activ'] = date_activ
     tabDatas['date_recup'] = get_heure_now()
 
-    json.dump(tabDatas,jsonfile)
+    #json.dump(tabDatas,jsonfile)
+    data=[]
 
     cond = 0
     for row in reader:
         if(cond == 1):
-            json.dump(row, jsonfile)
-            jsonfile.write(',')
-            jsonfile.write('\n')
+            #json.dump(row, jsonfile)
+            #jsonfile.write(',')
+            #jsonfile.write('\n')
+            data.append(row)
         else:
             cond = 1
+
+    tabDatas['data'] = data
+    json.dump(tabDatas,jsonfile)
 
 ###################################################
 def donnneToCsv(datas, filepath):
@@ -330,12 +337,17 @@ def get_heure_now():
 #donnneToCsv(jesaispo,'test.csv')
 #donnneToCsv(trans,'test1.csv')
 
-print((str(sys.argv)))
-ses = login((str(sys.argv))[1],(str(sys.argv))[1])
+
+arg1 = (str(sys.argv[1]))
+arg2 = (str(sys.argv[2]))
+
+farg1 = "".join(x for x in arg1 if x.isalnum())
+
+ses = login(arg1,arg2)
 don = recup_donnee(ses,heure,date_activ,get_heure_now())
-transDon = transfoDonee(derp,param,date_activ,get_heure_now())
-donnneToCsv(transDon,(str(sys.argv))[1]+'.csv')
-csvToJson((str(sys.argv))[1]+'.csv',(str(sys.argv))[1]+'.json')
+transDon = transfoDonee(don,heure,date_activ,get_heure_now())
+donnneToCsv(transDon,farg1+'.csv')
+csvToJson(farg1+'.csv',farg1+'.json')
 
 
 

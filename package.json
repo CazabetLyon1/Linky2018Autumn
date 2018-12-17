@@ -1,0 +1,25 @@
+{
+  "name": "linky",
+  "version": "1.0.0",
+  "description": "Projet :     Site :         login(linky)         affichage (courbe)             zoom sur courbe             //choix des dates (calendrier)             prix estimé selon contrat             imbrication (ie : cliquer sur un mois pour détails semaines)             statistiques             conseils             message de sensibilisation",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "node-fetch": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lamborot-eliot/Linky.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lamborot-eliot/Linky/issues"
+  },
+  "homepage": "https://github.com/lamborot-eliot/Linky#readme"
+}

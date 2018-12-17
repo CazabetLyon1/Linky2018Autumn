@@ -28,7 +28,6 @@ var chart = null;
 });
 
 function hideSideBar() {
-  console.log("qfqfqfqfqsf");
   if($('#menu').hasClass('reveal'))
   {
     $('#menu').removeClass('reveal');
@@ -39,13 +38,23 @@ function hideSideBar() {
   else return false;
 }
 
+function connection() {
+  var mail = $('#usr').val();
+  var pass = $('#pwd').val();
+  var data = {"email": mail,"password" : pass};
+  fetch('/connection', {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
+
+}
+
 
 function test() {
-  var data = {name : "ter"};
-      fetch('/clicked', {
-        method: 'POST',
-        body: JSON.stringify(data)
-      })
+  fetch('/clicked', {method: 'POST'})
     .then(function(response) {
       if(response.ok) {
         console.log('click was recorded');
@@ -56,4 +65,4 @@ function test() {
     .catch(function(error) {
       console.log(error);
 });
-  }
+}

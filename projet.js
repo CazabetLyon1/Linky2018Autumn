@@ -1,6 +1,7 @@
+var chartr = null;
+
 $(document).ready(function() {
 
-var chart = null;
 
   $("#core").load("./accueil.html");
   $("#mod").load("./modal.html");
@@ -49,6 +50,14 @@ function connection() {
     method: 'POST',
     body: JSON.stringify(data)
   })
+    .then((response) => {
+      if(response.ok) {
+        response.json().then((result) => chartr=result);
+        return;
+      }
+
+      throw new Error('erreur de connection.');
+    });
 
 }
 

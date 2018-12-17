@@ -342,7 +342,7 @@ arg1 = (str(sys.argv[1]))
 arg2 = (str(sys.argv[2]))
 
 farg1 = "".join(x for x in arg1 if x.isalnum())
-
+print(farg1);
 ses = login(arg1,arg2)
 don = recup_donnee(ses,heure,date_activ,get_heure_now())
 transDon = transfoDonee(don,heure,date_activ,get_heure_now())

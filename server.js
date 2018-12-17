@@ -2,6 +2,9 @@ console.log('Server-side code running');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const fs = require('fs');
+const { exec } = require('child_process');
+
 
 
 
@@ -24,28 +27,31 @@ app.get('/', (req, res) => {
 });
 
 app.post('/connection', (req, res) => {
-
-	const { exec } = require('child_process');
 	var email = req.body.email;
 	var pwd = req.body.password;
+	console.log("Dbut requete");
 	exec('python3 dataminer.py '+email+' '+pwd, (error, stdout, stderr) => {
 		if (error) {
 			res.sendStatus(400);
 			return;
 		}
-		console.log(`stdout: ${stdout}`);
-		console.log(`stderr: ${stderr}`);
+		console.log("Fin requete");
+		fs.readFile(stdout.split('\n')[0]+'.json', 'utf8', function (err, data) {
+			if (err) throw err;
+			obj = JSON.parse(data);
+			res.json(data);
+		});
 	});
 });
 
 app.post('/clicked', (req, res) => {
-	const { exec } = require('child_process');
 	exec('python3 dataminer.py catounono@aol.com Elioteliot@69', (error, stdout, stderr) => {
 		if (error) {
-			console.error(`exec error: ${error}`);
+			res.sendStatus(400);
 			return;
 		}
-		console.log(`stdout: ${stdout}`);
-		console.log(`stderr: ${stderr}`);
+		console.log(stdout.split('\n')[0]);
+		console.log('easy');
 	});
 });
+

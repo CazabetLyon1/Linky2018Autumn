@@ -12,7 +12,8 @@
         <input type="date" id="debut">
         <input type="date" id="fin">
 
-        <input type='file' accept='json' onchange='openFile(event)'><br>
+        <input type='file' accept='json' onchange='openFile(event)'><br>       
+        <input type='button' value="update" onclick='init()'><br>
         <input type='button' value="annee" onclick="tabUpdate('annee')"><br>
         <input type='button' value="mois" onclick="tabUpdate('mois')"><br>
         <input type='button' value="jour" onclick="tabUpdate('jour')"><br>
@@ -46,23 +47,13 @@
             <input type="radio" id="btnJour" name="btnType" value="jour"> Jour<br>
         </form>
 
+
         <script type="text/javascript">
-        console.log(chartr);
         var allDatas;
         var dotos = [];
         var tab = [1,2,3,4,5,6,7];
         var currentType;
         var currentFiltre = 0;
-
-
-
-
-
-
-
-
-
-
 
 
         var ctx = document.getElementById("myChart").getContext('2d');
@@ -73,8 +64,8 @@
                 datasets: [{
                     label: 'kW/h',
                     backgroundColor: 'rgba(20, 20, 200, 0.2)',
-    				borderColor: 'rgba(20, 20, 200, 0.3)',
-    				borderWidth: 5,
+                    borderColor: 'rgba(20, 20, 200, 0.3)',
+                    borderWidth: 5,
                     data: tab
                 }]
             },
@@ -346,8 +337,41 @@
 
         };
 
+        var init = () => {
+            putZero(chart['data']);
+            console.log(chart);
+                allDatas = chart['data'];
+                var temp = chart['date_activ'];
+                console.log(chart);
+                var date_activ = temp.slice(6,10)+'-'+temp.slice(3,5)+'-'+temp.slice(0,2);
+
+                temp = chart['date_recup'];
+                var date_recup = temp.slice(6,10)+'-'+temp.slice(3,5)+'-'+temp.slice(0,2);
+
+
+                document.getElementById('debut').min = date_activ;
+                document.getElementById('debut').max = date_recup;
+                document.getElementById('fin').min = date_activ;
+                document.getElementById('fin').max = date_recup;
+
+
+                if(document.getElementById("btnJour").checked){
+                    tabUpdate("jour");
+                }
+                else if (document.getElementById("btnMois").checked) {
+                    tabUpdate("mois");
+                }
+                else if (document.getElementById("btnAnnee").checked) {
+                    tabUpdate("annee");
+                }
+                else {
+                    console.error("error");
+                }
+        };
+
         var openFile = function(event) {
             var input = event.target;
+
 
             var reader = new FileReader();
             reader.onload = function(){
@@ -389,7 +413,7 @@
             reader.readAsText(input.files[0]);
         };
 
-        var stats = function (datas) {
+        var stats = function (datas) {
             var somme = 0;
             var compt = 0;
             var moy = 0;

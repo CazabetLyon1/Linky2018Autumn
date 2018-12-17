@@ -12,7 +12,7 @@
     <input type="date" id="debut">
     <input type="date" id="fin">
 
-    <input type='file' accept='json' onchange='openFile(event)'><br>       
+    <input type='file' accept='json' onchange='openFile(event)'><br>
     <input type='button' value="update" onclick='init()'><br>
     <input type='button' value="annee" onclick="tabUpdate('annee')"><br>
     <input type='button' value="mois" onclick="tabUpdate('mois')"><br>
@@ -63,9 +63,9 @@
                 labels: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"],
                 datasets: [{
                     label: 'kW/h',
-                    backgroundColor: 'rgba(20, 20, 200, 0.2)',
-                    borderColor: 'rgba(20, 20, 200, 0.3)',
-                    borderWidth: 5,
+                    backgroundColor: ['rgba(200, 20, 20, 1)','rgba(200, 20, 200, 1)'],
+                    //borderColor: 'rgba(20, 20, 200, 0.6)',
+                    //borderWidth: 5,
                     data: tab
                 }]
             },
@@ -127,6 +127,7 @@
 
             myChart['config']['data']['datasets']['0']['data'] = chartData(tabd,currentFiltre);
             myChart['config']['data']['labels'] = chartLabel(tabd,type);
+            myChart['config']['data']['datasets']['0']['backgroundColor'] = chartColor(tabd,type);
             myChart.update();
 
         };
@@ -141,13 +142,49 @@
             return res;
         };
 
-        var chartLabel = function(datas,type){
-            /*var res = [];
-            for (var i = 0; i < datas.length; i++) {
-                res.push(i.toString());
+        var chartColor = function(datas,type) {
+
+
+            if(type == 'jour'){
+                var temp;
+                var res = [];
+
+                for (var i = 0; i < datas.length; i++) {
+                    if(typeof datas[i][0] !== 'undefined') {
+                        temp = new Date(datas[i][0]['annee'],parseInt(datas[i][0]['mois'])-1,datas[i][0]['jour']);
+                        switch (temp.getDay()) {
+                            case 0:
+                                res.push('rgba(255, 66, 66, 0.7)');
+                                break;
+                                case 1:
+                                    res.push('rgba(190, 255, 66, 0.7)');
+                                    break;
+                                    case 2:
+                                        res.push('rgba(228, 255, 66, 0.7)');
+                                        break;
+                                        case 3:
+                                            res.push('rgba(255, 255, 66, 0.7)');
+                                            break;
+                                            case 4:
+                                                res.push('rgba(255, 228, 66, 0.7)');
+                                                break;
+                                                case 5:
+                                                    res.push('rgba(255, 190, 66, 0.7)');
+                                                    break;
+                                                    case 6:
+                                                        res.push('rgba(190, 66, 66, 0.7)');
+                                                        break;
+
+
+                        }
+                    }
+                }
+                return res;
             }
-            console.log(res);
-            return res;*/
+            return('rgba(20, 20, 200, 0.7)');
+        };
+
+        var chartLabel = function(datas,type){
 
             if(type == "mois"){
 
@@ -422,6 +459,7 @@
                 somme += parseFloat(datas[i]['valeur']);
                 compt++;
             }
+            somme = somme/2;
             moy = somme/compt;
             res.push(somme.toFixed(2));
             res.push(compt);
@@ -478,7 +516,7 @@
 
         var putZero = function (datas) {
             for (var i = 0; i < datas.length; i++) {
-                if(datas[i]['valeur'] == "-1")
+                if(parseInt(datas[i]['valeur']) < 0)
                 {
                     datas[i]['valeur'] = "0";
                     console.log("nbZero");

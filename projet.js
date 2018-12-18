@@ -43,7 +43,8 @@ function connection() {
   var mail = $('#usr').val();
   var pass = $('#pwd').val();
   var data = {"email": mail,"password" : pass};
-  $('#load').append("<i class=\"fas fa-fw fa-circle-notch fa-spin\"></i>")
+  $('#load span').remove();
+  $('#load').append("<i class=\"fas fa-fw fa-circle-notch fa-spin\"></i>");
   fetch('/connection', {
     headers: {
       'Content-Type': 'application/json'
@@ -58,7 +59,11 @@ function connection() {
         response.json().then((result) => chart=JSON.parse(result));
         return;
       }
-
+      else 
+      {
+        console.log("dqsdqdd");
+        $('#load').append("<span style=\"color:red;\">Erreur lors de la connexion, veuillez réessayer.</span>");
+      }
       throw new Error('erreur de connection.');
     });
 

@@ -6,7 +6,6 @@
     border-radius: 20px ! important;
 }
 
-/* Check la couleur*/
 .sidebar {
   height: 100%;
   width: 160px;
@@ -56,13 +55,6 @@
   -webkit-transition: 300ms ease;
   transition: 300ms ease;
 }
-
-
-/* Add media queries for small screens (when the height of the screen is less than 450px, add a smaller padding and font-size) */
-/*@media screen and (max-height: 450px) {
-  .sidebar {padding-top: 15px;}
-  .sidebar a {font-size: 18px;}
-}*/
 
  .reveal {
   -webkit-transform: translateX(0%);

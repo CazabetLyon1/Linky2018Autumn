@@ -1,7 +1,7 @@
 console.log('Server-side code running');
 
 const express = require('express');
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser'); //nécessaire pour récupérer les json envoyés par le client
 const fs = require('fs');
 const { exec } = require('child_process');
 

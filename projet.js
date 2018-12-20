@@ -24,12 +24,12 @@ $(document).ready(function() {
     $("#core").load("./accueil.html");
   });
 
-  $(window).scroll(()=>hideSideBar());
+  $(window).scroll(()=>hideSideBar()); //Pour cacher le menu coullisant (ou side bar) lors d'un scroll
 
 });
 
 function hideSideBar() {
-  if($('#menu').hasClass('reveal'))
+  if($('#menu').hasClass('reveal')) //Si la sidebar est visible
   {
     $('#menu').removeClass('reveal');
     $('#bars').removeClass('fa-spin');
@@ -40,7 +40,7 @@ function hideSideBar() {
 }
 
 function connection() {
-  var mail = $('#usr').val();
+  var mail = $('#usr').val(); //Récupération des valeurs depuis les inputs de modals
   var pass = $('#pwd').val();
   var data = {"email": mail,"password" : pass};
   $('#load span').remove();
@@ -56,7 +56,7 @@ function connection() {
       $('#load i').remove();
       if(response.ok) {
         $('#ModalGraphique').modal("hide");
-        response.json().then((result) => chart=JSON.parse(result));
+        response.json().then((result) => chart=JSON.parse(result)); //La réponse est sous forme de Promise, il a donc fallut récupérer le résultat et la stocker dans une variable
         return;
       }
       else 
